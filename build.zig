@@ -19,8 +19,12 @@ pub fn build(b: *Builder) !void {
     _ = qemu;
 }
 
-fn genTarget(arch: std.Target.Cpu.Arch) !CrossTarget {
-    var target = CrossTarget{ .cpu_arch = arch, .os_tag = .freestanding, .abi = .none };
+fn genTarget(arch: Arch) !CrossTarget {
+    var target = CrossTarget{
+        .cpu_arch = arch,
+        .os_tag = .freestanding,
+        .abi = .none,
+    };
 
     switch (arch) {
         .x86_64 => {
@@ -61,8 +65,8 @@ fn buildKernel(b: *Builder, target: CrossTarget) !*std.build.LibExeObjStep {
 
 fn buildLimineIso(b: *Builder, kernel: *std.build.LibExeObjStep) !*std.build.RunStep {
     const limine_install_executable = switch (builtin.os.tag) {
-        .linux => "limine-s2deploy",
-        .windows => "limine-s2deploy.exe",
+        .linux => "limine-deploy",
+        .windows => "limine-deploy.exe",
         else => return error.UnsupportedOs,
     };
     const mkiso_args = &[_][]const u8{
@@ -91,8 +95,14 @@ fn runIsoQemu(b: *Builder, iso: *std.build.RunStep, arch: Arch) !*std.build.RunS
     };
     const qemu_iso_args = &[_][]const u8{
         qemu_executable,
+        "-M",
+        "q35",
+        "-m",
+        "2G",
         "-cdrom",
         "zig-out/iso/limine-barebones.iso",
+        "-boot",
+        "d",
     };
     const qemu_iso_cmd = b.addSystemCommand(qemu_iso_args);
     qemu_iso_cmd.step.dependOn(&iso.step);

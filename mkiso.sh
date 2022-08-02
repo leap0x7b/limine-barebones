@@ -23,8 +23,8 @@ which xorriso > /dev/null || exit_missing xorriso
 [ -e "$LIMINE_BIN_DIR" ] || log_fatal "Limine binary directory $LIMINE_BIN_DIR doesn't exist"
 [ -d "$LIMINE_BIN_DIR" ] || log_fatal "Limine binary directory $LIMINE_BIN_DIR isn't a directory"
 
-[ -e "$LIMINE_BIN_DIR/limine-eltorito-efi.bin" ] || log_fatal "Limine binary $LIMINE_BIN_DIR/limine-eltorito-efi.bin doesn't exist"
-[ -f "$LIMINE_BIN_DIR/limine-eltorito-efi.bin" ] || log_fatal "Limine binary $LIMINE_BIN_DIR/limine-eltorito-efi.bin isn't a regular file"
+[ -e "$LIMINE_BIN_DIR/limine-cd-efi.bin" ] || log_fatal "Limine binary $LIMINE_BIN_DIR/limine-cd-efi.bin doesn't exist"
+[ -f "$LIMINE_BIN_DIR/limine-cd-efi.bin" ] || log_fatal "Limine binary $LIMINE_BIN_DIR/limine-cd-efi.bin isn't a regular file"
 
 [ -e "$LIMINE_BIN_DIR/limine-cd.bin" ] || log_fatal "Limine binary $LIMINE_BIN_DIR/limine-cd.bin doesn't exist"
 [ -f "$LIMINE_BIN_DIR/limine-cd.bin" ] || log_fatal "Limine binary $LIMINE_BIN_DIR/limine-cd.bin isn't a regular file"
@@ -32,7 +32,7 @@ which xorriso > /dev/null || exit_missing xorriso
 [ -e "$LIMINE_BIN_DIR/limine.sys" ] || log_fatal "Limine binary $LIMINE_BIN_DIR/limine.sys doesn't exist"
 [ -f "$LIMINE_BIN_DIR/limine.sys" ] || log_fatal "Limine binary $LIMINE_BIN_DIR/limine.sys isn't a regular file"
 
-[ "$LIMINE_BIN_DIR/$LIMINE_INSTALL_BINARY" == "$LIMINE_BIN_DIR/limine-s2deploy" ] && [ -f "$LIMINE_BIN_DIR/limine-s2deploy" ] || make -C "$LIMINE_BIN_DIR"
+[ "$LIMINE_BIN_DIR/$LIMINE_INSTALL_BINARY" == "$LIMINE_BIN_DIR/limine-deploy" ] && [ -f "$LIMINE_BIN_DIR/limine-deploy" ] || make -C "$LIMINE_BIN_DIR"
 [ -e "$LIMINE_BIN_DIR/$LIMINE_INSTALL_BINARY" ] || log_fatal "Limine binary $LIMINE_BIN_DIR/$LIMINE_INSTALL_BINARY doesn't exist"
 [ -f "$LIMINE_BIN_DIR/$LIMINE_INSTALL_BINARY" ] || log_fatal "Limine binary $LIMINE_BIN_DIR/$LIMINE_INSTALL_BINARY isn't a regular file"
 
@@ -45,11 +45,11 @@ mkdir -p "$ISO_DIR/boot"
 cp "$KERNEL_FILE" "$ISO_DIR/boot/kernel"
 cp -r "$LIMINE_DIR/"* "$ISO_DIR/boot"
 cp "$LIMINE_BIN_DIR/limine.sys" "$ISO_DIR/boot"
-cp "$LIMINE_BIN_DIR/limine-eltorito-efi.bin" "$ISO_DIR"
+cp "$LIMINE_BIN_DIR/limine-cd-efi.bin" "$ISO_DIR"
 cp "$LIMINE_BIN_DIR/limine-cd.bin" "$ISO_DIR"
 xorriso -as mkisofs -b "limine-cd.bin" \
         -no-emul-boot -boot-load-size 4 -boot-info-table \
-        --efi-boot "limine-eltorito-efi.bin" \
+        --efi-boot "limine-cd-efi.bin" \
         -efi-boot-part --efi-boot-image --protective-msdos-label \
         "$ISO_DIR" -o "$OUTPUT_FILE"
 
