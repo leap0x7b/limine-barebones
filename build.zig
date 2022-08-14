@@ -95,14 +95,10 @@ fn runIsoQemu(b: *Builder, iso: *std.build.RunStep, arch: Arch) !*std.build.RunS
     };
     const qemu_iso_args = &[_][]const u8{
         qemu_executable,
-        "-M",
-        "q35",
-        "-m",
-        "2G",
-        "-cdrom",
-        "zig-out/iso/limine-barebones.iso",
-        "-boot",
-        "d",
+        "-M", "q35,accel=kvm:whpx:tcg",
+        "-m", "2G",
+        "-cdrom", "zig-out/iso/limine-barebones.iso",
+        "-boot", "d",
     };
     const qemu_iso_cmd = b.addSystemCommand(qemu_iso_args);
     qemu_iso_cmd.step.dependOn(&iso.step);

@@ -14,7 +14,7 @@ fn done() void {
 }
 
 // The following will be our kernel's entry point.
-export fn _start() callconv(.C) void {
+pub export fn _start() callconv(.C) void {
     // Ensure we got a terminal
     var terminal: limine.Terminal.Response = undefined;
     if (terminal_request.response) |_terminal| {
@@ -27,7 +27,7 @@ export fn _start() callconv(.C) void {
 
     // We should now be able to call the Limine terminal to print out
     // a simple "Hello World" to screen.
-    var terminals = terminal.getTerminals();
+    const terminals = terminal.getTerminals();
     terminal.write(terminals[0], "Hello World");
 
     // We're done, just hang...
