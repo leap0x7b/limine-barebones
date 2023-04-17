@@ -5,7 +5,6 @@ ENTRY(_start)
 /* MMU permissions */
 PHDRS
 {
-    null    PT_NULL    FLAGS(0) ;                   /* Null segment */
     text    PT_LOAD    FLAGS((1 << 0) | (1 << 2)) ; /* Execute + Read */
     rodata  PT_LOAD    FLAGS((1 << 2)) ;            /* Read only */
     data    PT_LOAD    FLAGS((1 << 1) | (1 << 2)) ; /* Write + Read */
@@ -37,8 +36,18 @@ SECTIONS
         *(.data .data.*)
     } :data
 
+    /* NOTE: .bss needs to be the last thing mapped to :data, otherwise lots of */
+    /* unnecessary zeros will be written to the binary. */
+    /* If you need, for example, .init_array and .fini_array, those should be placed */
+    /* above this. */
     .bss : {
         *(COMMON)
         *(.bss .bss.*)
     } :data
+
+    /* Discard .note.* and .eh_frame since they may cause issues on some hosts. */
+    /DISCARD/ : {
+        *(.eh_frame)
+        *(.note .note.*)
+    }
 }
