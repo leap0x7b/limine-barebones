@@ -1,4 +1,5 @@
 const std = @import("std");
+const builtin = @import("builtin");
 const limine = @import("limine");
 
 // The Limine requests can be placed anywhere, but it is important that
@@ -7,9 +8,21 @@ const limine = @import("limine");
 
 pub export var terminal_request: limine.Terminal.Request = .{};
 
-fn done() void {
-    while (true) {
-        asm volatile ("hlt");
+// Halt and catch fire function
+fn hcf() void {
+    switch (builtin.target.cpu.arch) {
+        .x86_64 => {
+            asm volatile ("cli");
+            while (true) {
+                asm volatile ("hlt");
+            }
+        },
+        .aarch64, .riscv64 => {
+            while (true) {
+                asm volatile ("wfi");
+            }
+        },
+        else => @compileError("unsupported architecture"),
     }
 }
 
@@ -21,7 +34,7 @@ pub export fn _start() callconv(.C) void {
         terminal = _terminal.*;
 
         if (terminal.terminal_count < 1) {
-            done();
+            hcf();
         }
     }
 
@@ -31,5 +44,5 @@ pub export fn _start() callconv(.C) void {
     terminal.write(terminals[0], "Hello World");
 
     // We're done, just hang...
-    done();
+    hcf();
 }

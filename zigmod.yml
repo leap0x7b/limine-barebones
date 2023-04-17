@@ -1,9 +1,0 @@
-id: t5ivlqsxemkgfac1c4c5a3wlsaekkncd7q8uyb3tvrip6c8j
-name: limine-barebones
-license: BSD-2-Clause
-description: A minimal Limine kernel written in Zig
-root_dependencies:
-  - src: git https://github.com/leapofazzam123/limine
-  - src: git https://github.com/limine-bootloader/limine branch-v3.0-binary
-    id: limine
-    keep: true

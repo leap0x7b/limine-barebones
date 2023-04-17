@@ -1,0 +1,10 @@
+.{
+    .name = "limine-barebones",
+    .version = "0.1.0",
+    .dependencies = .{
+        .limine = .{
+            .url = "https://github.com/leap0x7b/limine/archive/facb27ed803582838cd4904392b06cf55c8c70b8.tar.gz",
+            .hash = "1220ba5c648d72b6d244fb5e801bb8e68dec06e90ac1fa0ddb127c0d61e866a91a0a",
+        },
+    },
+}
